@@ -21,6 +21,13 @@
 pip install -r requirements.txt
 ```
 
+- Запишите переменные окружения в файле `.env`
+
+```bash
+SUPERJOB_API_TOKEN=... #Токен полученный на https://api.superjob.ru/
+CITY=... #Город, например Москва
+```
+
 - Запустить скрипт
 
 ```bash
