@@ -1,11 +1,10 @@
-from statistics import mean
+from statistics import mean, StatisticsError
 
 import requests
 
 URL_SUPERJOB = 'https://api.superjob.ru/2.0/vacancies/'
 HEADERS_SUPERJOB = {}
 PAYLOAD_SUPERJOB = {
-    'town': 'Москва',
     'page': 0,
     'count': 100
 }
@@ -38,9 +37,13 @@ def get_language_superjob(lang: str) -> dict:
     for vacancy in vacancies:
         if salary := predict_rub_salary_for_superjob(vacancy):
             salaries.append(salary)
+    try:
+        svg_lang_salary = int(mean(salaries))
+    except StatisticsError:
+        svg_lang_salary = 0
     language = {'vacancies_found': get_count_vacancies(processed_response),
                 "vacancies_processed": len(salaries),
-                "average_salary": int(mean(salaries))
+                "average_salary": svg_lang_salary
                 }
     return language
 
@@ -72,9 +75,10 @@ def get_all_vacancies_superjob(content: dict) -> list:
     return vacancies
 
 
-def create_language_info_superjob(langs: list, api_token: str) -> dict:
+def create_language_info_superjob(langs: list, api_token: str, city: str) -> dict:
     """Создаем словарь с информацией о вакансиях по языкам программирования"""
     HEADERS_SUPERJOB['X-Api-App-Id'] = api_token
+    PAYLOAD_SUPERJOB['town'] = city
     result = {}
     for lang in langs:
         result[lang] = get_language_superjob(lang)
