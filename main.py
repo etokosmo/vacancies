@@ -1,4 +1,7 @@
+import os
+
 from environs import Env
+from loguru import logger
 from terminaltables import SingleTable
 
 from hhru import create_language_info_hhru
@@ -7,8 +10,10 @@ from superjob import create_language_info_superjob
 CITIES = {"Москва": {
     "town": "Москва",
     "area": 1
-    }
 }
+}
+BASE_DIR = os.path.dirname(__file__) or '.'
+PATH_TO_LOGS = os.path.join(BASE_DIR, 'logs', 'logs.log')
 
 
 def print_table(content: dict, title: str, city: str = 'Moscow') -> None:
@@ -25,17 +30,21 @@ def print_table(content: dict, title: str, city: str = 'Moscow') -> None:
 
 def main() -> None:
     """Парсим вакансии по Москве на hh.ru и superjob и выводим их в консоль"""
+    logger.add(PATH_TO_LOGS, level='DEBUG')
     env = Env()
     env.read_env()
     superjob_api_token = env("SUPERJOB_API_TOKEN")
     city = env("CITY", "Москва")
     hh_city = CITIES.get(city).get("area")
     sj_city = CITIES.get(city).get("town")
+    logger.info(f'Прием аргументов: city={city}, hh_city={hh_city}, sj_city={sj_city}')
+
     languages = ['Python', 'Java', 'JavaScript', 'C', 'C#', 'C++', 'Ruby', 'Go', '1C']
     services = {
         'hhru': create_language_info_hhru(languages, hh_city),
         'superjob': create_language_info_superjob(languages, superjob_api_token, sj_city)
     }
+
     for service, content in services.items():
         print_table(content, service, city)
 
