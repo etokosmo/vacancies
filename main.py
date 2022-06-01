@@ -7,16 +7,25 @@ from terminaltables import SingleTable
 from hhru import create_language_info_hhru
 from superjob import create_language_info_superjob
 
-CITIES = {"Москва": {
-    "town": "Москва",
-    "area": 1
-}
+CITIES = {
+    "Москва": {
+        "town": "Москва",
+        "area": 1
+    },
+    "Санкт-Петербург": {
+        "town": "Санкт-Петербург",
+        "area": 2
+    },
+    "Екатеринбург": {
+        "town": "Екатеринбург",
+        "area": 3
+    },
 }
 BASE_DIR = os.path.dirname(__file__) or '.'
 PATH_TO_LOGS = os.path.join(BASE_DIR, 'logs', 'logs.log')
 
 
-def print_table(content: dict, title: str, city: str = 'Moscow') -> None:
+def print_table(content: dict, title: str, city: str) -> None:
     """Выводим красивую информативную таблицу"""
     header = ["Язык программирования", "Вакансий найдено", "Вакансий обработано", "Средняя зарплата"]
     body = [[lang, content.get(lang).get("vacancies_found"), content.get(lang).get("vacancies_processed"),
@@ -35,8 +44,12 @@ def main() -> None:
     env.read_env()
     superjob_api_token = env("SUPERJOB_API_TOKEN")
     city = env("CITY", "Москва")
-    hh_city = CITIES.get(city).get("area")
-    sj_city = CITIES.get(city).get("town")
+    try:
+        hh_city = CITIES.get(city).get("area")
+        sj_city = CITIES.get(city).get("town")
+    except AttributeError:
+        logger.error(f'Неправильно передан город')
+        return None
     logger.info(f'Прием аргументов: city={city}, hh_city={hh_city}, sj_city={sj_city}')
 
     languages = ['Python', 'Java', 'JavaScript', 'C', 'C#', 'C++', 'Ruby', 'Go', '1C']

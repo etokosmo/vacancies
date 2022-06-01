@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 ```bash
 SUPERJOB_API_TOKEN=... #Токен полученный на https://api.superjob.ru/
-CITY=... #Город, например Москва
+CITY=... #Город, например Москва, Санкт-Петербург или Екатеринбург
 ```
 
 - Запустить скрипт
