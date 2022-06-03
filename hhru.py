@@ -3,7 +3,7 @@ from statistics import mean, StatisticsError
 import requests
 from loguru import logger
 
-from superjob import predict_rub_salary
+from libs.salary_utils import predict_rub_salary
 
 
 def get_language_hhru(lang: str, payload_hhru: dict) -> dict:

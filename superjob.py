@@ -3,17 +3,7 @@ from statistics import mean, StatisticsError
 import requests
 from loguru import logger
 
-
-def predict_rub_salary(currency: str, min_salary: int | None, max_salary: int | None) -> float | None:
-    """Получаем среднюю зарплату по профессии"""
-    if currency not in ('rub', 'RUR'):
-        return None
-    if min_salary and max_salary:
-        return mean([max_salary, max_salary])
-    if min_salary:
-        return min_salary * 1.2
-    if max_salary:
-        return max_salary * 0.8
+from libs.salary_utils import predict_rub_salary
 
 
 def get_language_superjob(lang: str, headers_superjob: dict, payload_superjob: dict) -> dict:
