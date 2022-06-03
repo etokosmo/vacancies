@@ -18,9 +18,20 @@ PATH_TO_LOGS = os.path.join(BASE_DIR, 'logs', 'logs.log')
 
 def print_table(content: dict, title: str, city: str) -> None:
     """Выводим красивую информативную таблицу"""
-    header = ["Язык программирования", "Вакансий найдено", "Вакансий обработано", "Средняя зарплата"]
-    body = [[lang, content.get(lang).get("vacancies_found"), content.get(lang).get("vacancies_processed"),
-             content.get(lang).get("average_salary")] for lang in content]
+    header = [
+        "Язык программирования",
+        "Вакансий найдено",
+        "Вакансий обработано",
+        "Средняя зарплата"
+    ]
+    body = [
+        [
+            lang,
+            content.get(lang).get("vacancies_found"),
+            content.get(lang).get("vacancies_processed"),
+            content.get(lang).get("average_salary")
+        ] for lang in content
+    ]
     body.insert(0, header)
 
     table_instance = SingleTable(body, f'{title} {city}')
@@ -40,12 +51,27 @@ def main() -> None:
     except AttributeError:
         logger.error(f'Неправильно передан город')
         return None
-    logger.info(f'Прием аргументов: city={city}, hh_city={area}, sj_city={city}')
+    logger.info(
+        f'Прием аргументов: city={city}, hh_city={area}, sj_city={city}')
 
-    languages = ['Python', 'Java', 'JavaScript', 'C', 'C#', 'C++', 'Ruby', 'Go', '1C']
+    languages = [
+        'Python',
+        'Java',
+        'JavaScript',
+        'C',
+        'C#',
+        'C++',
+        'Ruby',
+        'Go',
+        '1C'
+    ]
     services = {
         'hhru': create_language_info_hhru(languages, area),
-        'superjob': create_language_info_superjob(languages, superjob_api_token, city)
+        'superjob': create_language_info_superjob(
+            languages,
+            superjob_api_token,
+            city
+        )
     }
 
     for service, content in services.items():

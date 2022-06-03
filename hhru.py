@@ -15,11 +15,19 @@ def get_language_hhru(lang: str, payload_hhru: dict) -> dict:
     payload_hhru['text'] = f'Программист {lang}'
     payload_hhru['only_with_salary'] = True
 
-    response = requests.get(url_hhru, headers=headers_hhru, params=payload_hhru)
+    response = requests.get(
+        url_hhru,
+        headers=headers_hhru,
+        params=payload_hhru
+    )
     response.raise_for_status()
     processed_response = response.json()
 
-    vacancies = get_all_vacancies_hhru(processed_response, url_hhru, headers_hhru, payload_hhru)
+    vacancies = get_all_vacancies_hhru(
+        processed_response,
+        url_hhru,
+        headers_hhru,
+        payload_hhru)
     salaries = []
     for vacancy in vacancies:
         salary = vacancy.get('salary')
@@ -35,21 +43,29 @@ def get_language_hhru(lang: str, payload_hhru: dict) -> dict:
     except StatisticsError:
         logger.debug(f'Язык={lang}. Вакансий с зарплатой не найдено')
         svg_lang_salary = 0
-    language = {'vacancies_found': processed_response.get('found'),
-                "vacancies_processed": len(salaries),
-                "average_salary": svg_lang_salary
-                }
+    language = {
+        "vacancies_found": processed_response.get('found'),
+        "vacancies_processed": len(salaries),
+        "average_salary": svg_lang_salary
+    }
     logger.info(f'Language={lang}, info={language}')
     return language
 
 
-def get_all_vacancies_hhru(content: dict, url_hhru: str, headers_hhru: dict, payload_hhru: dict) -> list:
+def get_all_vacancies_hhru(content: dict,
+                           url_hhru: str,
+                           headers_hhru: dict,
+                           payload_hhru: dict) -> list:
     """Возвращаем список всех вакансий для языка, в которых указана зарплата"""
     pages = content.get('pages')
     vacancies = []
     for page in range(pages + 1):
         payload_hhru['page'] = page
-        response = requests.get(url_hhru, headers=headers_hhru, params=payload_hhru)
+        response = requests.get(
+            url_hhru,
+            headers=headers_hhru,
+            params=payload_hhru
+        )
         response.raise_for_status()
         vacancies_on_page = response.json().get('items')
         for vac in vacancies_on_page:

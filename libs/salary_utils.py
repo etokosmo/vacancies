@@ -1,7 +1,9 @@
 from statistics import mean
 
 
-def predict_rub_salary(currency: str, min_salary: int | None, max_salary: int | None) -> float | None:
+def predict_rub_salary(currency: str,
+                       min_salary: int | None,
+                       max_salary: int | None) -> float | None:
     """Получаем среднюю зарплату по профессии"""
     if currency not in ('rub', 'RUR'):
         return None
