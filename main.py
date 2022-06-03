@@ -8,18 +8,9 @@ from hhru import create_language_info_hhru
 from superjob import create_language_info_superjob
 
 CITIES = {
-    "Москва": {
-        "town": "Москва",
-        "area": 1
-    },
-    "Санкт-Петербург": {
-        "town": "Санкт-Петербург",
-        "area": 2
-    },
-    "Екатеринбург": {
-        "town": "Екатеринбург",
-        "area": 3
-    },
+    "Москва": 1,
+    "Санкт-Петербург": 2,
+    "Екатеринбург": 3,
 }
 BASE_DIR = os.path.dirname(__file__) or '.'
 PATH_TO_LOGS = os.path.join(BASE_DIR, 'logs', 'logs.log')
@@ -45,17 +36,16 @@ def main() -> None:
     superjob_api_token = env("SUPERJOB_API_TOKEN")
     city = env("CITY", "Москва")
     try:
-        hh_city = CITIES.get(city).get("area")
-        sj_city = CITIES.get(city).get("town")
+        area = CITIES.get(city)
     except AttributeError:
         logger.error(f'Неправильно передан город')
         return None
-    logger.info(f'Прием аргументов: city={city}, hh_city={hh_city}, sj_city={sj_city}')
+    logger.info(f'Прием аргументов: city={city}, hh_city={area}, sj_city={city}')
 
     languages = ['Python', 'Java', 'JavaScript', 'C', 'C#', 'C++', 'Ruby', 'Go', '1C']
     services = {
-        'hhru': create_language_info_hhru(languages, hh_city),
-        'superjob': create_language_info_superjob(languages, superjob_api_token, sj_city)
+        'hhru': create_language_info_hhru(languages, area),
+        'superjob': create_language_info_superjob(languages, superjob_api_token, city)
     }
 
     for service, content in services.items():
